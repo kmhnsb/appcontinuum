@@ -1,0 +1,24 @@
+language:
+  - java
+jdk:
+  - oraclejdk8
+services:
+  - mysql
+  - redis-server
+before_script:
+  - sudo service redis-server stop
+  - sudo sed -i "s|# requirepass foobared|requirepass foobared|g" /etc/redis/redis.conf
+  - sudo service redis-server start
+  - mysql -u root -e "create user 'uservices'@'localhost' identified by 'uservices'"
+  - mysql -u root -e "create database allocations_test"
+  - mysql -u root -e "grant all privileges on allocations_test.* to 'uservices'@'localhost'"
+  - ./gradlew -Pflyway.locations=filesystem:databases/allocations-database -Pflyway.url="jdbc:mysql://localhost:3306/allocations_test?user=uservices&password=uservices" flywayMigrate -i
+  - mysql -u root -e "create database backlog_test"
+  - mysql -u root -e "grant all privileges on backlog_test.* to 'uservices'@'localhost'"
+  - ./gradlew -Pflyway.locations=filesystem:databases/backlog-database -Pflyway.url="jdbc:mysql://localhost:3306/backlog_test?user=uservices&password=uservices" flywayMigrate -i
+  - mysql -u root -e "create database registration_test"
+  - mysql -u root -e "grant all privileges on registration_test.* to 'uservices'@'localhost'"
+  - ./gradlew -Pflyway.locations=filesystem:databases/registration-database -Pflyway.url="jdbc:mysql://localhost:3306/registration_test?user=uservices&password=uservices" flywayMigrate -i
+  - mysql -u root -e "create database timesheets_test"
+  - mysql -u root -e "grant all privileges on timesheets_test.* to 'uservices'@'localhost'"
+  - ./gradlew -Pflyway.locations=filesystem:databases/timesheets-database -Pflyway.url="jdbc:mysql://localhost:3306/timesheets_test?user=uservices&password=uservices" flywayMigrate -i

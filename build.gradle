@@ -6,7 +6,12 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.mariadb.jdbc:mariadb-java-client:2.3.0"
     }
+}
+
+plugins {
+    id "org.flywaydb.flyway" version "5.2.3"
 }
 
 subprojects {
