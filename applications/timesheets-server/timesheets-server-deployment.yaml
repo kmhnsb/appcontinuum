@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: timesheets-server
+spec:
+  selector:
+    matchLabels:
+      app: timesheets-server
+      tier: frontend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: timesheets-server
+        tier: frontend
+    spec:
+      containers:
+        - name: timesheets-server
+          image: gcr.io/appcontinuum/appcontinuum-timesheets-server
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          env:
+            - name: PORT
+              value: '80'
+            - name: DISCOVERY_SERVER_ENDPOINT
+              value: 'http://DISCOVERY_SERVER_HOST_NAME:80'
+            - name: VCAP_SERVICES
+              value: '{"p-mysql": [{"credentials": {"jdbcUrl": "jdbc:mysql://MYSQL_HOST_NAME:3306/timesheets_test?user=uservices&password=uservices"},"name":"timesheets"}]}'
+          ports:
+            - containerPort: 80

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backlog-server
+spec:
+  selector:
+    matchLabels:
+      app: backlog-server
+      tier: frontend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: backlog-server
+        tier: frontend
+    spec:
+      containers:
+        - name: backlog-server
+          image: gcr.io/appcontinuum/appcontinuum-backlog-server
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          env:
+            - name: PORT
+              value: '80'
+            - name: DISCOVERY_SERVER_ENDPOINT
+              value: 'http://DISCOVERY_SERVER_HOST_NAME:80'
+            - name: VCAP_SERVICES
+              value: '{"p-mysql": [{"credentials": {"jdbcUrl": "jdbc:mysql://MYSQL_HOST_NAME:3306/backlog_test?user=uservices&password=uservices"},"name":"backlog"}]}'
+          ports:
+            - containerPort: 80

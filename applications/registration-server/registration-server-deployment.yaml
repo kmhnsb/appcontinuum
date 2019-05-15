@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registration-server
+spec:
+  selector:
+    matchLabels:
+      app: registration-server
+      tier: frontend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: registration-server
+        tier: frontend
+    spec:
+      containers:
+        - name: registration-server
+          image: gcr.io/appcontinuum/appcontinuum-registration-server
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          env:
+            - name: PORT
+              value: '80'
+            - name: DISCOVERY_SERVER_ENDPOINT
+              value: 'http://DISCOVERY_SERVER_HOST_NAME:80'
+            - name: VCAP_SERVICES
+              value: '{"p-mysql": [{"credentials": {"jdbcUrl": "jdbc:mysql://MYSQL_HOST_NAME:3306/registration_test?user=uservices&password=uservices"},"name":"registration"}]}'
+          ports:
+            - containerPort: 80

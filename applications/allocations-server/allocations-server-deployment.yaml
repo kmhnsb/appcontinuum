@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: allocations-server
+spec:
+  selector:
+    matchLabels:
+      app: allocations-server
+      tier: frontend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: allocations-server
+        tier: frontend
+    spec:
+      containers:
+        - name: allocations-server
+          image: gcr.io/appcontinuum/appcontinuum-allocations-server
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          env:
+            - name: PORT
+              value: '80'
+            - name: DISCOVERY_SERVER_ENDPOINT
+              value: 'http://DISCOVERY_SERVER_HOST_NAME:80'
+            - name: VCAP_SERVICES
+              value: '{"p-mysql": [{"credentials": {"jdbcUrl": "jdbc:mysql://MYSQL_HOST_NAME:3306/allocations_test?user=uservices&password=uservices"},"name":"allocations"}]}'
+          ports:
+            - containerPort: 80

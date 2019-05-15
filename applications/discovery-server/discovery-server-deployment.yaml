@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discovery-server
+spec:
+  selector:
+    matchLabels:
+      app: discovery-server
+      tier: frontend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: discovery-server
+        tier: frontend
+    spec:
+      containers:
+        - name: discovery-server
+          image: gcr.io/appcontinuum/appcontinuum-discovery-server
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          env:
+            - name: PORT
+              value: '80'
+            - name: VCAP_SERVICES
+              value: '{"rediscloud": [{"credentials": {"hostname": "REDIS_HOST_NAME", "password": "foobarbaz", "port": 6379}, "name": "discovery"}]}'
+          ports:
+            - containerPort: 80

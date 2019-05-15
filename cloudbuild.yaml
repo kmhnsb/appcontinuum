@@ -1,0 +1,29 @@
+steps:
+  - name: 'gcr.io/cloud-builders/gradle'
+    args: ['build', '-x', 'test']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-f', 'applications/allocations-server/Dockerfile',
+           '--tag=gcr.io/$PROJECT_ID/appcontinuum-allocations-server', '.']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-f', 'applications/backlog-server/Dockerfile',
+           '--tag=gcr.io/$PROJECT_ID/appcontinuum-backlog-server', '.']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-f', 'applications/discovery-server/Dockerfile',
+           '--tag=gcr.io/$PROJECT_ID/appcontinuum-discovery-server', '.']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-f', 'applications/registration-server/Dockerfile',
+           '--tag=gcr.io/$PROJECT_ID/appcontinuum-registration-server', '.']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-f', 'applications/timesheets-server/Dockerfile',
+           '--tag=gcr.io/$PROJECT_ID/appcontinuum-timesheets-server', '.']
+
+images: ['gcr.io/$PROJECT_ID/appcontinuum-allocations-server',
+         'gcr.io/$PROJECT_ID/appcontinuum-backlog-server',
+         'gcr.io/$PROJECT_ID/appcontinuum-discovery-server',
+         'gcr.io/$PROJECT_ID/appcontinuum-registration-server',
+         'gcr.io/$PROJECT_ID/appcontinuum-timesheets-server']
